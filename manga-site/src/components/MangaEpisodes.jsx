@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const MangaEpisodes = () => {
   const { id } = useParams();
@@ -13,7 +13,9 @@ const MangaEpisodes = () => {
       <h1>Episodes of {manga.title}</h1>
       <ul>
         {manga.episodes.map((episode, index) => (
-          <li key={index}>{episode.title}</li>
+          <li key={index}>
+            <Link to={`/manga/${id}/episodes/${index}`}>{episode.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
