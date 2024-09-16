@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 const EditManga = () => {
   const { id } = useParams();
@@ -16,9 +24,7 @@ const EditManga = () => {
     const updatedMangaList = mangaList.filter((_, i) => i !== index);
     setMangaList(updatedMangaList);
     localStorage.setItem('manga', JSON.stringify(updatedMangaList));
-    navigate('/');
   };
-  
 
   const handleEditManga = () => {
     const updatedMangaList = mangaList.map((manga, index) => 
@@ -43,68 +49,118 @@ const EditManga = () => {
 
   if (currentManga) {
     return (
-      <div>
-        <h1>Edit Manga</h1>
-        <input
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '20px',
+        }}
+      >
+        <h1 style={{ margin: '10px' }}>Edit Manga</h1>
+
+        <TextField
+          label="Title"
           type="text"
-          placeholder="Title"
           value={currentManga.title}
           onChange={(e) => setCurrentManga({ ...currentManga, title: e.target.value })}
+          sx={{ margin: '10px', width: '100%' }}
         />
-        <input
+        <TextField
+          label="Cover Image URL"
           type="text"
-          placeholder="Cover Image URL"
           value={currentManga.coverImage}
           onChange={(e) => setCurrentManga({ ...currentManga, coverImage: e.target.value })}
+          sx={{ margin: '10px', width: '100%' }}
         />
-        <textarea
-          placeholder="Description"
-          value={currentManga.description}
-          onChange={(e) => setCurrentManga({ ...currentManga, description: e.target.value })}
-        />
-        
-        <h2>Add Episode</h2>
-        <input
+          <TextField
+            label="Description"
+            type="text"
+            value={currentManga.description}
+            onChange={(e) => setCurrentManga({ ...currentManga, description: e.target.value })}
+            sx={{ 
+              margin: '10px', 
+              width: '100%', 
+              whiteSpace: 'pre-wrap',  
+              wordWrap: 'break-word',  
+              maxWidth: '500px',       
+            }}
+            multiline  
+            rows={4}   
+          />
+
+
+        <h2 style={{ margin: '10px' }}>Add Episode</h2>
+
+        <TextField
+          label="Episode Title"
           type="text"
-          placeholder="Episode Title"
           value={newEpisode.title}
           onChange={(e) => setNewEpisode({ ...newEpisode, title: e.target.value })}
+          sx={{ margin: '10px', width: '100%' }}
         />
-        <textarea
-          placeholder="Episode Description"
-          value={newEpisode.description}
-          onChange={(e) => setNewEpisode({ ...newEpisode, description: e.target.value })}
-        />
-        <input
+        <TextField
+          label="Image URL"
           type="text"
-          placeholder="Image URL"
           onChange={(e) => setNewEpisode(prev => ({
             ...prev,
             images: [...prev.images, e.target.value]
           }))}
+          sx={{ margin: '10px', width: '100%' }}
         />
-        <button onClick={handleAddEpisode}>Add Episode</button>
-        
-        <button onClick={handleEditManga}>Save Changes</button>
-        <button onClick={handleCancel}>Cancel</button>
-        <button onClick={handleDeleteManga}>Delete Manga</button>
-      </div>
+
+        <Button onClick={handleAddEpisode} variant="outlined" sx={{ margin: '10px' }}>
+          Add Episode
+        </Button>
+
+        <Button onClick={handleEditManga} variant="outlined" sx={{ margin: '10px' }}>
+          Save Changes
+        </Button>
+        <Button onClick={handleCancel} variant="outlined" sx={{ margin: '10px' }}>
+          Cancel
+        </Button>
+        <Button onClick={() => handleDeleteManga(parseInt(id, 10))} variant="outlined" sx={{ margin: '10px' }}>
+          Delete Manga
+        </Button>
+      </Box>
     );
   }
 
   return (
-    <div>
-      <h1>Select Manga to Edit</h1>
-      <ul>
+    <Box sx={{ margin: '20px' }}>
+      <h1 style={{ margin: '10px' }}>Select Manga to Edit</h1>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '20px',
+        }}
+      >
         {mangaList.map((manga, index) => (
-          <li key={index}>
-            <h2>{manga.title}</h2>
-            <button onClick={() => handleEditClick(index)}>Edit</button>
-            <button onClick={() => handleDeleteManga(index)}>Delete</button>
-          </li>
+          <Card key={index} sx={{ maxWidth: 345 }}>
+            <CardMedia
+              sx={{ height: 200 }}
+              image={manga.coverImage}
+              title={manga.title}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {manga.title}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" onClick={() => handleEditClick(index)}>
+                Edit
+              </Button>
+              <Button size="small" onClick={() => handleDeleteManga(index)}>
+                Delete
+              </Button>
+            </CardActions>
+          </Card>
         ))}
-      </ul>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
