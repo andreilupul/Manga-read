@@ -1,6 +1,7 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import { useParams, useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
 
 const EpisodeDetails = () => {
   const { id, episodeId } = useParams();
@@ -31,9 +32,31 @@ const EpisodeDetails = () => {
 
   return (
     <div>
-      <h1>{episode.title}</h1>
-      <p>{episode.description}</p>
-
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          bgcolor: 'background.paper',
+          zIndex: 1000,
+          borderBottom: '1px solid #ddd',
+          padding: '10px',
+          textAlign: 'center', // Center text inside the Box
+        }}
+      >
+        <h2>Episode {episodeIndex + 1}</h2>
+        <div>
+          <button onClick={goToPreviousEpisode} disabled={episodeIndex === 0}>
+            Previous Episode
+          </button>
+          <button onClick={goToAllEpisodes}>
+            All Episodes
+          </button>
+          <button onClick={goToNextEpisode} disabled={episodeIndex === manga.episodes.length - 1}>
+            Next Episode
+          </button>
+        </div>
+      </Box>
+      
       <List
         sx={{
           width: '100%',
@@ -41,7 +64,7 @@ const EpisodeDetails = () => {
           bgcolor: 'background.paper',
           position: 'relative',
           overflow: 'auto',
-          maxHeight: 3000,
+          maxHeight: 'auto',
           '& ul': { padding: 0 },
         }}
         subheader={<li />}
@@ -51,10 +74,10 @@ const EpisodeDetails = () => {
             <li key={index}>
               <img
                 src={img}
-                alt={`Episode ${episode.title} Image ${index}`}
+                alt={`Episode ${episodeIndex + 1} Image ${index}`}
                 style={{
                   display: 'block',
-                  width: '80%', // Lățimea imaginii este acum 80% din lățimea containerului
+                  width: '60%', // Lățimea imaginii este acum 60% din lățimea containerului
                   margin: '20px auto', // Imaginea este centrată și are un spațiu de 20px sus și jos
                   borderRadius: '10px', // Adăugare de colțuri rotunjite pentru estetică
                 }}
@@ -63,18 +86,6 @@ const EpisodeDetails = () => {
           ))}
         </ul>
       </List>
-
-      <div>
-        <button onClick={goToPreviousEpisode} disabled={episodeIndex === 0}>
-          Previous Episode
-        </button>
-        <button onClick={goToAllEpisodes}>
-          All Episodes
-        </button>
-        <button onClick={goToNextEpisode} disabled={episodeIndex === manga.episodes.length - 1}>
-          Next Episode
-        </button>
-      </div>
     </div>
   );
 };

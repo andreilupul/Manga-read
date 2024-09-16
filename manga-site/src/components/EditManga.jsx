@@ -8,6 +8,12 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 
 const EditManga = () => {
   const { id } = useParams();
@@ -15,6 +21,7 @@ const EditManga = () => {
   const [mangaList, setMangaList] = useState(JSON.parse(localStorage.getItem('manga')) || []);
   const [currentManga, setCurrentManga] = useState(null);
   const [newEpisode, setNewEpisode] = useState({ title: '', description: '', images: [] });
+  const [imageInput, setImageInput] = useState(''); // State for single image input
 
   const handleEditClick = (index) => {
     setCurrentManga(mangaList[index]);
@@ -24,6 +31,7 @@ const EditManga = () => {
     const updatedMangaList = mangaList.filter((_, i) => i !== index);
     setMangaList(updatedMangaList);
     localStorage.setItem('manga', JSON.stringify(updatedMangaList));
+    navigate('/'); // Navigate back to home after deletion
   };
 
   const handleEditManga = () => {
@@ -41,6 +49,14 @@ const EditManga = () => {
       episodes: [...prev.episodes, newEpisode]
     }));
     setNewEpisode({ title: '', description: '', images: [] });
+  };
+
+  const handleAddImage = () => {
+    setNewEpisode(prev => ({
+      ...prev,
+      images: [...prev.images, imageInput]
+    }));
+    setImageInput(''); // Clear input after adding
   };
 
   const handleCancel = () => {
@@ -74,22 +90,21 @@ const EditManga = () => {
           onChange={(e) => setCurrentManga({ ...currentManga, coverImage: e.target.value })}
           sx={{ margin: '10px', width: '100%' }}
         />
-          <TextField
-            label="Description"
-            type="text"
-            value={currentManga.description}
-            onChange={(e) => setCurrentManga({ ...currentManga, description: e.target.value })}
-            sx={{ 
-              margin: '10px', 
-              width: '100%', 
-              whiteSpace: 'pre-wrap',  
-              wordWrap: 'break-word',  
-              maxWidth: '500px',       
-            }}
-            multiline  
-            rows={4}   
-          />
-
+        <TextField
+          label="Description"
+          type="text"
+          value={currentManga.description}
+          onChange={(e) => setCurrentManga({ ...currentManga, description: e.target.value })}
+          sx={{ 
+            margin: '10px', 
+            width: '100%', 
+            whiteSpace: 'pre-wrap',  
+            wordWrap: 'break-word',  
+            maxWidth: '500px',       
+          }}
+          multiline  
+          rows={4}   
+        />
 
         <h2 style={{ margin: '10px' }}>Add Episode</h2>
 
@@ -101,19 +116,63 @@ const EditManga = () => {
           sx={{ margin: '10px', width: '100%' }}
         />
         <TextField
-          label="Image URL"
+          label="Episode Description"
           type="text"
-          onChange={(e) => setNewEpisode(prev => ({
-            ...prev,
-            images: [...prev.images, e.target.value]
-          }))}
+          value={newEpisode.description}
+          onChange={(e) => setNewEpisode({ ...newEpisode, description: e.target.value })}
           sx={{ margin: '10px', width: '100%' }}
         />
+        <TextField
+          label="Image URL"
+          type="text"
+          value={imageInput}
+          onChange={(e) => setImageInput(e.target.value)}
+          sx={{ margin: '10px', width: '100%' }}
+        />
+        <Button onClick={handleAddImage} variant="outlined" sx={{ margin: '10px' }}>
+          Add Image
+        </Button>
+
+        {/* List of episode images with scroll and only 3 visible at a time */}
+        <List
+          sx={{
+            width: '100%',
+            maxWidth: 360,
+            bgcolor: 'background.paper',
+            maxHeight: 250, // Adjust height for 3 images and scrolling
+            overflowY: 'auto', // Enable scrolling
+            margin: '10px',
+          }}
+        >
+          {newEpisode.images.map((img, index) => (
+            <React.Fragment key={index}>
+              <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                  <Avatar alt={`Episode ${newEpisode.title}`} src={img} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={`Image ${index + 1}`}
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        sx={{ color: 'text.primary', display: 'inline' }}
+                      >
+                        {`Episode: ${newEpisode.title}`}
+                      </Typography>
+                    </React.Fragment>
+                  }
+                />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
 
         <Button onClick={handleAddEpisode} variant="outlined" sx={{ margin: '10px' }}>
           Add Episode
         </Button>
-
         <Button onClick={handleEditManga} variant="outlined" sx={{ margin: '10px' }}>
           Save Changes
         </Button>
@@ -152,9 +211,6 @@ const EditManga = () => {
             <CardActions>
               <Button size="small" onClick={() => handleEditClick(index)}>
                 Edit
-              </Button>
-              <Button size="small" onClick={() => handleDeleteManga(index)}>
-                Delete
               </Button>
             </CardActions>
           </Card>

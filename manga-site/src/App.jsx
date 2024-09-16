@@ -9,6 +9,7 @@ import EditManga from './components/EditManga';
 import MangaEpisodes from './components/MangaEpisodes';
 import EpisodeDetails from './components/EpisodeDetails';
 
+
 const theme = createTheme({
   palette: {
     mode: 'dark', // setează tema pe mod întunecat
