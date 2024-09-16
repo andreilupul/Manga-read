@@ -6,6 +6,7 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
+      
       <div>
         {mangaList.map((manga, index) => (
           <div key={index}>

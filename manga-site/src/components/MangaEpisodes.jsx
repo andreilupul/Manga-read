@@ -1,3 +1,7 @@
+//nu mai este folosit 
+
+
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 
@@ -9,7 +13,11 @@ const MangaEpisodes = () => {
   if (!manga) return <div>Manga not found</div>;
 
   return (
+  
     <div>
+      <div>
+        jfghfghjfghjfghjfghjfghjfghj
+      </div>
       <h1>Episodes of {manga.title}</h1>
       <ul>
         {manga.episodes.map((episode, index) => (

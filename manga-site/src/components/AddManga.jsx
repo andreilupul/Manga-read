@@ -30,6 +30,10 @@ const AddManga = () => {
     // Salvează manga în localStorage
     const existingManga = JSON.parse(localStorage.getItem('manga')) || [];
     localStorage.setItem('manga', JSON.stringify([...existingManga, newManga]));
+        setTitle('');
+    setCoverImage('');
+    setDescription('');
+    setEpisodes([]);
   };
 
   return (
