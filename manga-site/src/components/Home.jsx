@@ -13,7 +13,7 @@ const Home = () => {
     <div>
       <h1>Home</h1>
       
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {mangaList.map((manga, index) => (
           <div key={index} style={{ flex: '1 1 calc(25% - 16px)', maxWidth: 'calc(25% - 160px)' }}>
             <Link to={`/manga/${index}`} style={{ textDecoration: 'none' }}>
