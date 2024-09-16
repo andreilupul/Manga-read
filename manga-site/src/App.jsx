@@ -8,7 +8,7 @@ import MangaDetails from './components/MangaDetails';
 import EditManga from './components/EditManga';
 import MangaEpisodes from './components/MangaEpisodes';
 import EpisodeDetails from './components/EpisodeDetails';
-
+import MangaList from './components/MangaList';
 
 const theme = createTheme({
   palette: {
@@ -28,7 +28,8 @@ const App = () => {
           <Route path="/manga/:id" element={<MangaDetails />} />
           <Route path="/manga/:id/episodes" element={<MangaEpisodes />} />
           <Route path="/manga/:id/episodes/:episodeId" element={<EpisodeDetails />} />
-          <Route path="/edit-manga/:id" element={<EditManga />} /> {/* Rută corectă */}
+          <Route path="/edit/:id" element={<EditManga />} />
+          <Route path="/manga-list" element={<MangaList />} />
         </Routes>
       </Router>
     </ThemeProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -18,20 +18,31 @@ import Avatar from '@mui/material/Avatar';
 const EditManga = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [mangaList, setMangaList] = useState(JSON.parse(localStorage.getItem('manga')) || []);
+  const [mangaList, setMangaList] = useState([]);
   const [currentManga, setCurrentManga] = useState(null);
   const [newEpisode, setNewEpisode] = useState({ title: '', description: '', images: [] });
-  const [imageInput, setImageInput] = useState(''); // State for single image input
+  const [imageInput, setImageInput] = useState('');
+
+  // Load manga list from local storage
+  useEffect(() => {
+    const storedMangaList = JSON.parse(localStorage.getItem('manga')) || [];
+    setMangaList(storedMangaList);
+    if (id !== undefined) {
+      setCurrentManga(storedMangaList[parseInt(id, 10)] || null); // Set current manga based on id
+    }
+  }, [id]);
 
   const handleEditClick = (index) => {
-    setCurrentManga(mangaList[index]);
+    navigate(`/edit/${index}`);
   };
 
   const handleDeleteManga = (index) => {
     const updatedMangaList = mangaList.filter((_, i) => i !== index);
     setMangaList(updatedMangaList);
     localStorage.setItem('manga', JSON.stringify(updatedMangaList));
-    navigate('/'); // Navigate back to home after deletion
+    if (parseInt(id, 10) === index) {
+      navigate('/');
+    }
   };
 
   const handleEditManga = () => {
@@ -56,14 +67,54 @@ const EditManga = () => {
       ...prev,
       images: [...prev.images, imageInput]
     }));
-    setImageInput(''); // Clear input after adding
+    setImageInput('');
   };
 
   const handleCancel = () => {
     navigate('/');
   };
 
+  if (id === undefined) {
+    // Display list of manga
+    return (
+      <Box sx={{ margin: '20px' }}>
+        <h1 style={{ margin: '10px' }}>Select Manga to Edit</h1>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '20px',
+          }}
+        >
+          {mangaList.map((manga, index) => (
+            <Card key={index} sx={{ maxWidth: 345 }}>
+              <CardMedia
+                sx={{ height: 200 }}
+                image={manga.coverImage}
+                title={manga.title}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {manga.title}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small" onClick={() => handleEditClick(index)}>
+                  Edit
+                </Button>
+                <Button size="small" onClick={() => handleDeleteManga(index)}>
+                  Delete
+                </Button>
+              </CardActions>
+            </Card>
+          ))}
+        </Box>
+      </Box>
+    );
+  }
+
   if (currentManga) {
+    // Display edit form for selected manga
     return (
       <Box
         sx={{
@@ -133,14 +184,13 @@ const EditManga = () => {
           Add Image
         </Button>
 
-        {/* List of episode images with scroll and only 3 visible at a time */}
         <List
           sx={{
             width: '100%',
             maxWidth: 360,
             bgcolor: 'background.paper',
-            maxHeight: 250, // Adjust height for 3 images and scrolling
-            overflowY: 'auto', // Enable scrolling
+            maxHeight: 250,
+            overflowY: 'auto',
             margin: '10px',
           }}
         >
@@ -186,38 +236,7 @@ const EditManga = () => {
     );
   }
 
-  return (
-    <Box sx={{ margin: '20px' }}>
-      <h1 style={{ margin: '10px' }}>Select Manga to Edit</h1>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '20px',
-        }}
-      >
-        {mangaList.map((manga, index) => (
-          <Card key={index} sx={{ maxWidth: 345 }}>
-            <CardMedia
-              sx={{ height: 200 }}
-              image={manga.coverImage}
-              title={manga.title}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {manga.title}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={() => handleEditClick(index)}>
-                Edit
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
-      </Box>
-    </Box>
-  );
+  return null;
 };
 
 export default EditManga;
