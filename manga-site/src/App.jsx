@@ -5,7 +5,7 @@ import AddManga from './components/AddManga';
 import MangaDetails from './components/MangaDetails';
 import EditManga from './components/EditManga';
 import MangaEpisodes from './components/MangaEpisodes';
-import EpisodeDetails from './components/EpisodeDetails'; // Asigură-te că ai creat această componentă
+import EpisodeDetails from './components/EpisodeDetails';
 
 const App = () => {
   return (
@@ -17,8 +17,8 @@ const App = () => {
           <Route path="/add-manga" element={<AddManga />} />
           <Route path="/manga/:id" element={<MangaDetails />} />
           <Route path="/manga/:id/episodes" element={<MangaEpisodes />} />
-          <Route path="/manga/:id/episodes/:episodeId" element={<EpisodeDetails />} /> {/* Noua rută */}
-          <Route path="/edit-manga" element={<EditManga />} />
+          <Route path="/manga/:id/episodes/:episodeId" element={<EpisodeDetails />} />
+          <Route path="/edit-manga/:id" element={<EditManga />} /> {/* Rută corectă */}
         </Routes>
       </div>
     </Router>
