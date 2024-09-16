@@ -9,9 +9,42 @@ const Navbar = () => (
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
         MangaRo
       </Typography>
-      <Button color="inherit" component={Link} to="/">Home</Button>
-      <Button color="inherit" component={Link} to="/add-manga">Add Manga</Button>
-      <Button color="inherit" component={Link} to="/manga-list">Edit Manga</Button>
+      <Button
+        color="inherit"
+        component={Link}
+        to="/"
+        sx={{
+          '&:hover': {
+            backgroundColor: '#2E073F',
+          },
+        }}
+      >
+        Home
+      </Button>
+      <Button
+        color="inherit"
+        component={Link}
+        to="/add-manga"
+        sx={{
+          '&:hover': {
+            backgroundColor: '#2E073F',
+          },
+        }}
+      >
+        Add Manga
+      </Button>
+      <Button
+        color="inherit"
+        component={Link}
+        to="/manga-list"
+        sx={{
+          '&:hover': {
+            backgroundColor: '#2E073F',
+          },
+        }}
+      >
+        Edit Manga
+      </Button>
     </Toolbar>
   </AppBar>
 );

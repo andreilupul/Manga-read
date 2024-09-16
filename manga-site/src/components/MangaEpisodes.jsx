@@ -1,5 +1,7 @@
+// src/components/MangaEpisodes.jsx
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Typography, List, ListItem, ListItemText, Container, Box } from '@mui/material';
 
 const MangaEpisodes = () => {
   const { id } = useParams();
@@ -9,16 +11,26 @@ const MangaEpisodes = () => {
   if (!manga) return <div>Manga not found</div>;
 
   return (
-    <div>
-      <h1>Episodes of {manga.title}</h1>
-      <ul>
+    <Container sx={{ marginTop: 4, marginBottom: 4 }}>
+      <Box sx={{ textAlign: 'center', marginBottom: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Episodes of {manga.title}
+        </Typography>
+      </Box>
+      <List sx={{ padding: 0 }}>
         {manga.episodes.map((episode, index) => (
-          <li key={index}>
-            <Link to={`/manga/${id}/episodes/${index}`}>{episode.title}</Link>
-          </li>
+          <ListItem
+            key={index}
+            button
+            component={Link}
+            to={`/manga/${id}/episodes/${index}`}
+            sx={{ marginBottom: 1, borderRadius: '4px', '&:hover': { backgroundColor: '#2E236C' }, color: 'white' }}
+          >
+            <ListItemText primary={episode.title} />
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 };
 

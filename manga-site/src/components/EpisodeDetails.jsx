@@ -1,7 +1,7 @@
-import * as React from 'react';
-import List from '@mui/material/List';
+// src/components/EpisodeDetails.jsx
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Box from '@mui/material/Box';
+import { List, Box, Button, Stack, Typography } from '@mui/material';
 
 const EpisodeDetails = () => {
   const { id, episodeId } = useParams();
@@ -40,21 +40,32 @@ const EpisodeDetails = () => {
           zIndex: 1000,
           borderBottom: '1px solid #ddd',
           padding: '10px',
-          textAlign: 'center', // Center text inside the Box
+          textAlign: 'center',
         }}
       >
-        <h2>Episode {episodeIndex + 1}</h2>
-        <div>
-          <button onClick={goToPreviousEpisode} disabled={episodeIndex === 0}>
+        <Typography variant="h6">Episode {episodeIndex + 1}</Typography>
+        <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2 }}>
+          <Button
+            variant="contained"
+            onClick={goToPreviousEpisode}
+            disabled={episodeIndex === 0}
+          >
             Previous Episode
-          </button>
-          <button onClick={goToAllEpisodes}>
+          </Button>
+          <Button
+            variant="contained"
+            onClick={goToAllEpisodes}
+          >
             All Episodes
-          </button>
-          <button onClick={goToNextEpisode} disabled={episodeIndex === manga.episodes.length - 1}>
+          </Button>
+          <Button
+            variant="contained"
+            onClick={goToNextEpisode}
+            disabled={episodeIndex === manga.episodes.length - 1}
+          >
             Next Episode
-          </button>
-        </div>
+          </Button>
+        </Stack>
       </Box>
       
       <List
@@ -77,9 +88,9 @@ const EpisodeDetails = () => {
                 alt={`Episode ${episodeIndex + 1} Image ${index}`}
                 style={{
                   display: 'block',
-                  width: '60%', // Lățimea imaginii este acum 60% din lățimea containerului
-                  margin: '20px auto', // Imaginea este centrată și are un spațiu de 20px sus și jos
-                  borderRadius: '10px', // Adăugare de colțuri rotunjite pentru estetică
+                  width: '60%',
+                  margin: '20px auto',
+                  borderRadius: '10px',
                 }}
               />
             </li>
