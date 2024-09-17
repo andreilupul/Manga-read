@@ -1,40 +1,58 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getMangaFromFirestore } from '../firebase'; // Importează funcția din firebase.js
+import './Home.css'; // Importă fișierul CSS
 
 const Home = () => {
-  const mangaList = JSON.parse(localStorage.getItem('manga')) || [];
-  
+  const [mangaList, setMangaList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchManga = async () => {
+      try {
+        const mangaData = await getMangaFromFirestore();
+        setMangaList(mangaData || []); // Asigură-te că mangaList este întotdeauna un array
+      } catch (error) {
+        setError('Eroare la încărcarea manga.');
+        console.error('Error fetching manga:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchManga();
+  }, []);
+
+  if (loading) {
+    return <div>Se încarcă...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div>
       <h1>Home</h1>
-      
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {mangaList.map((manga, index) => (
-          <div key={index} style={{ flex: '1 1 calc(25% - 16px)', maxWidth: 'calc(25% - 160px)' }}>
-            <Link to={`/manga/${index}`} style={{ textDecoration: 'none' }}>
-              <Card sx={{ maxWidth: 200 }}>
-                <CardActionArea>
-                  <CardMedia
-                    component="img"
-                    height="auto"
-                    image={manga.coverImage} 
-                    alt={manga.title}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="" component="div">
-                      {manga.title}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Link>
-          </div>
-        ))}
+      <div className="home-container">
+        {mangaList.length > 0 ? (
+          mangaList.map((manga, index) => (
+            <div key={index} className="manga-card">
+              <Link to={`/manga/${index}`} style={{ textDecoration: 'none' }}>
+                <img src={manga.coverImage} alt={manga.title} />
+                <div className="description">
+                  <p>{manga.description}</p>
+                </div>
+                <div className="manga-title">
+                  <h6>{manga.title}</h6>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div>Nu există manga disponibile.</div>
+        )}
       </div>
     </div>
   );

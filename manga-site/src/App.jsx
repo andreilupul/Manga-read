@@ -16,13 +16,14 @@ const theme = createTheme({
   },
 });
 
+
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Navbar />
-        <Routes>
+        <Routes>  
           <Route path="/" element={<Home />} />
           <Route path="/add-manga" element={<AddManga />} />
           <Route path="/manga/:id" element={<MangaDetails />} />
@@ -30,6 +31,8 @@ const App = () => {
           <Route path="/manga/:id/episodes/:episodeId" element={<EpisodeDetails />} />
           <Route path="/edit/:id" element={<EditManga />} />
           <Route path="/manga-list" element={<MangaList />} />
+        
+
         </Routes>
       </Router>
     </ThemeProvider>

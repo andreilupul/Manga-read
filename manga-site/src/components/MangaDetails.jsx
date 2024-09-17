@@ -1,13 +1,44 @@
-import React from 'react';
+// src/components/MangaDetails.jsx
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Typography, List, ListItem, ListItemText, Container, Box } from '@mui/material';
+import { getMangaByIdFromFirestore } from '../firebase';
 
 const MangaDetails = () => {
   const { id } = useParams();
-  const mangaList = JSON.parse(localStorage.getItem('manga')) || [];
-  const manga = mangaList[id];
+  const [manga, setManga] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!manga) return <div>Manga not found</div>;
+  useEffect(() => {
+    const fetchManga = async () => {
+      console.log('Fetching manga with ID:', id); // Verifică ID-ul manga-ului
+      try {
+        const mangaData = await getMangaByIdFromFirestore(id);
+        console.log('Manga data fetched:', mangaData); // Verifică datele obținute
+        setManga(mangaData);
+      } catch (error) {
+        setError('Error fetching manga');
+        console.error('Error fetching manga:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchManga();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!manga) {
+    return <div>Manga not found</div>;
+  }
 
   return (
     <Container sx={{ marginTop: 4, marginBottom: 4 }}>
@@ -35,17 +66,23 @@ const MangaDetails = () => {
         Episodes
       </Typography>
       <List sx={{ padding: 0 }}>
-        {manga.episodes.map((episode, index) => (
-          <ListItem
-            key={index}
-            button
-            component={Link}
-            to={`/manga/${id}/episodes/${index}`}
-            sx={{ marginBottom: 1, borderRadius: '4px', '&:hover': { backgroundColor: '#2E236C' },color: 'white' }}
-          >
-            <ListItemText primary={episode.title} />
+        {manga.episodes && manga.episodes.length > 0 ? (
+          manga.episodes.map((episode, index) => (
+            <ListItem
+              key={index}
+              button
+              component={Link}
+              to={`/manga/${id}/episodes/${index}`}
+              sx={{ marginBottom: 1, borderRadius: '4px', '&:hover': { backgroundColor: '#2E236C' }, color: 'white' }}
+            >
+              <ListItemText primary={episode.title} />
+            </ListItem>
+          ))
+        ) : (
+          <ListItem>
+            <ListItemText primary="No episodes available" />
           </ListItem>
-        ))}
+        )}
       </List>
     </Container>
   );

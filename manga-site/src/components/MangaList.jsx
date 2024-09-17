@@ -8,20 +8,41 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { getMangaListFromFirestore } from '../firebase'; // Importă funcția din firebase.js
 
 const MangaList = () => {
   const navigate = useNavigate();
   const [mangaList, setMangaList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load manga list from local storage
   useEffect(() => {
-    const storedMangaList = JSON.parse(localStorage.getItem('manga')) || [];
-    setMangaList(storedMangaList);
+    const fetchMangaList = async () => {
+      try {
+        const mangaData = await getMangaListFromFirestore();
+        setMangaList(mangaData);
+      } catch (error) {
+        setError('Error fetching manga list');
+        console.error('Error fetching manga list:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMangaList();
   }, []);
 
   const handleEditClick = (index) => {
     navigate(`/edit/${index}`);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Box sx={{ margin: '20px' }}>

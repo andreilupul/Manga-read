@@ -1,18 +1,52 @@
 // src/components/EpisodeDetails.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { List, Box, Button, Stack, Typography } from '@mui/material';
+import { getMangaFromFirestore } from '../firebase'; // Importează funcția din firebase.js
 
 const EpisodeDetails = () => {
   const { id, episodeId } = useParams();
   const navigate = useNavigate();
-  const mangaList = JSON.parse(localStorage.getItem('manga')) || [];
-  const manga = mangaList[id];
-  const episodeIndex = parseInt(episodeId, 10);
-  const episode = manga ? manga.episodes[episodeIndex] : null;
+  const [manga, setManga] = useState(null);
+  const [episode, setEpisode] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!manga) return <div>Manga not found</div>;
-  if (episode === undefined) return <div>Episode not found</div>;
+  useEffect(() => {
+    const fetchManga = async () => {
+      try {
+        const mangaData = await getMangaFromFirestore(id);
+        const episodeIndex = parseInt(episodeId, 10);
+        if (mangaData && mangaData.episodes && mangaData.episodes[episodeIndex]) {
+          setManga(mangaData);
+          setEpisode(mangaData.episodes[episodeIndex]);
+        } else {
+          setError('Episode not found');
+        }
+      } catch (error) {
+        setError('Error fetching manga');
+        console.error('Error fetching manga:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchManga();
+  }, [id, episodeId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!manga || !episode) {
+    return <div>Data not found</div>;
+  }
+
+  const episodeIndex = parseInt(episodeId, 10);
 
   const goToPreviousEpisode = () => {
     if (episodeIndex > 0) {
